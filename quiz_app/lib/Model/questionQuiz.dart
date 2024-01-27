@@ -13,7 +13,7 @@ class QuizQuestion {
     return QuizQuestion(
       questionText: data['questionText'] ?? '',
       options: List<String>.from(data['options'] ?? []),
-      correctAnswer: data['correctAnswer'] ?? '',
+      correctAnswer: data['correctAns'] ?? '',
     );
   }
 }

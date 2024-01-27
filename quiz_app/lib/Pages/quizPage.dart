@@ -1,20 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:quiz_application/AuthPage/auth_service.dart';
-import 'package:quiz_application/components/barIncDec.dart';
+import 'package:quiz_application/Providers/QuestionManagerCount.dart';
+import 'package:quiz_application/Providers/optionsProvider.dart';
+import 'package:quiz_application/Providers/timeManger.dart';
+// import 'package:quiz_application/components/.dart';
 import 'package:quiz_application/components/option.dart';
-// ignore: depend_on_referenced_packages
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-Future<List<Map<String, dynamic>>> fetchQuestions() async {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  QuerySnapshot querySnapshot = await firestore.collection('questions').get();
-
-  return querySnapshot.docs
-      .map((doc) => doc.data() as Map<String, dynamic>)
-      .toList();
-}
+import 'package:provider/provider.dart';
+import 'package:quiz_application/components/timerFile.dart';
 
 class MainQuizPage extends StatefulWidget {
   const MainQuizPage({super.key});
@@ -24,16 +16,39 @@ class MainQuizPage extends StatefulWidget {
 }
 
 class _MainQuizPageState extends State<MainQuizPage> {
-  int? selectedOptionIndex; // Tracks the index of the selected option
-  bool? isCorrect; // Tracks if the selected option is correct
-  String? selectedOption; // Tracks the text of the selected option
+  int? selectedOptionIndex;
+  bool? isCorrect;
+  String? selectedOption;
 
-  void selectOption(
-      int index, String selectedOptionText, String correctAnswer) {
-    setState(() {
-      selectedOptionIndex = index;
-      isCorrect = selectedOptionText == correctAnswer;
-    });
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<QuestionManager>(context, listen: false)
+        .fetchQuestions(context);
+  }
+
+  Future<void> selectOption(int index, String selectedOptionText,
+      String correctAnswer, BuildContext context) async {
+    // setState(() {
+    // selectedOptionIndex = index;
+    //   isCorrect = selectedOptionText == correctAnswer;
+    // });
+    final bool isAnswered = context.read<optionProvider>().isAnswered;
+    if (isAnswered) {
+      return;
+    }
+    selectedOptionIndex = index;
+    optionProvider.isSelected = selectedOptionText;
+    Provider.of<optionProvider>(context, listen: false).CheckAnswer(context);
+    Provider.of<TimeManager>(context, listen: false).stopTimer();
+    // Provider.of<TimeManager>(context, listen: false).CalculatePoint();
+    // isCorrect = selectedOptionText == correctAnswer;
+    await Future.delayed(Duration(seconds: 1));
+    Provider.of<optionProvider>(context, listen: false).ResetFunc();
+    Provider.of<TimeManager>(context, listen: false).ResetTime();
+    Provider.of<QuestionManager>(context, listen: false)
+        .selectRandomQuestion(context);
+    Provider.of<TimeManager>(context, listen: false).startTimer(context);
   }
 
   void logout() {
@@ -43,8 +58,6 @@ class _MainQuizPageState extends State<MainQuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    double progress = 0.0;
-
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.deepPurple.shade200,
@@ -69,28 +82,27 @@ class _MainQuizPageState extends State<MainQuizPage> {
                 ))
           ],
         ),
-        body: FutureBuilder<List<Map<String, dynamic>>>(
-          future: fetchQuestions(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        body: Consumer<QuestionManager>(
+          builder: (context, questionManager, child) {
+            if (questionManager.isLoading) {
               return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              // Check for null or empty data
+            } else if (questionManager.questions.isEmpty) {
               return Center(child: Text("No questions available"));
             } else {
-              // Ensure we have non-null question and options
-              Map<String, dynamic> currentQuestion = snapshot.data!.first;
+              Map<String, dynamic> currentQuestion =
+                  questionManager.currentQuestion;
               String questionText =
                   currentQuestion['questionText'] as String? ??
-                      'Default Question'; // Handle potential null
+                      'Default Question';
               List<dynamic> options =
-                  currentQuestion['options'] as List<dynamic>? ??
-                      []; // Handle potential null
+                  currentQuestion['options'] as List<dynamic>? ?? [];
               String correctAnswer =
-                  currentQuestion['correctAnswer'] as String? ??
-                      ''; // Fetch and handle potential null for correctAnswer
+                  currentQuestion['correctAns'] as String? ?? '';
+
+              // Assuming optionProvider is your state management for options
+              Provider.of<optionProvider>(context, listen: false)
+                  .myOptions
+                  .clear();
 
               return buildQuizView(
                 context,
@@ -105,7 +117,7 @@ class _MainQuizPageState extends State<MainQuizPage> {
 
   Widget buildQuizView(BuildContext context, String questionText,
       List<dynamic> options, String correctAnswer) {
-    int count = 1;
+    final count = context.watch<QuestionManager>().alreadyAnswered.length + 1;
     Size size = MediaQuery.of(context).size;
     return Column(
       children: [
@@ -115,7 +127,7 @@ class _MainQuizPageState extends State<MainQuizPage> {
           decoration: BoxDecoration(
               color: Colors.deepPurple.shade100,
               borderRadius: BorderRadius.circular(10)),
-          child: BarIncDec(),
+          child: TimerClock(),
         ),
         SizedBox(
           height: size.height / 50,
@@ -186,12 +198,26 @@ class _MainQuizPageState extends State<MainQuizPage> {
                   bool optionIsCorrect = isSelected
                       ? isCorrect ?? false
                       : false; // Provide a default value of `false`
+                  // print(
+                  // "Correct Answer : ${correctAnswer} SelectedOption : ${opt}");
+                  Provider.of<optionProvider>(context, listen: false)
+                      .AddOptions(
+                          Options(
+                            text: opt,
+                            onTap: () =>
+                                selectOption(idx, opt, correctAnswer, context),
+                            isSelected: isSelected,
+                            isCorrect: correctAnswer == opt,
+                            index: idx,
+                          ),
+                          idx);
 
                   return Options(
                     text: opt,
                     isSelected: isSelected,
                     isCorrect: optionIsCorrect, // Pass non-nullable boolean
-                    onTap: () => selectOption(idx, opt, correctAnswer),
+                    onTap: () => selectOption(idx, opt, correctAnswer, context),
+                    index: idx,
                   );
                 }).toList(),
               ],

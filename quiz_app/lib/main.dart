@@ -1,18 +1,36 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_application/AuthPage/auth_gate.dart';
+import 'package:quiz_application/Pages/finalPage.dart';
 import 'package:quiz_application/Pages/quizPage.dart';
-import 'package:quiz_application/components/barIncDec.dart';
+import 'package:quiz_application/Providers/QuestionManagerCount.dart';
+import 'package:quiz_application/Providers/optionsProvider.dart';
+import 'package:quiz_application/Providers/timeManger.dart';
+import 'package:quiz_application/components/incDecBar.dart';
+// import 'package:quiz_application/components/.dart';
+import 'package:quiz_application/components/timerFile.dart';
 import 'firebase_options.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    MyApp(),
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<optionProvider>(
+        create: (context) => optionProvider(),
+      ),
+      ChangeNotifierProvider<QuestionManager>(
+        create: (context) => QuestionManager(),
+      ),
+      ChangeNotifierProvider<TimeManager>(
+        create: (context) => TimeManager(),
+      ),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -35,7 +53,10 @@ class _MyAppState extends State<MyApp> {
         // ),
         // body: BarIncDec(),
         // body: AuthGate(),
-        body: MainQuizPage(),
+        // body: TimerClock(),
+        // body: MainQuizPage(),
+        body: FinalPage(),
+        // body: BudgetSliderWidget(),
         // body: MainAuthPage(),
         // body: RegisterPage(),
       ),
