@@ -10,8 +10,8 @@ class QuestionManager with ChangeNotifier {
   List<Map<String, dynamic>> _questions = [];
   bool _isLoading = true;
 
-  int maxQuestions = 5;
-  int currentQuestionIndex = Random().nextInt(5);
+  int maxQuestions = 10;
+  int currentQuestionIndex = Random().nextInt(10);
   // int attempts = 0;
 
   // Add getters for questions and loading state

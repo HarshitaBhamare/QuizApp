@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz_application/Pages/homePage.dart';
 import 'package:quiz_application/Pages/loginPage.dart';
 import 'package:quiz_application/Pages/quizPage.dart';
 
@@ -13,7 +14,7 @@ class AuthGate extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return MainQuizPage();
+            return HomePage();
           } else {
             return MainAuthPage();
           }

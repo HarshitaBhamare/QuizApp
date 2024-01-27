@@ -51,17 +51,13 @@ class _MainQuizPageState extends State<MainQuizPage> {
     Provider.of<TimeManager>(context, listen: false).startTimer(context);
   }
 
-  void logout() {
-    final auth = AuthService();
-    auth.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.deepPurple.shade200,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.deepPurple.shade200,
           centerTitle: true,
           title: Text(
@@ -73,14 +69,6 @@ class _MainQuizPageState extends State<MainQuizPage> {
               fontSize: size.height / 30,
             ),
           ),
-          actions: [
-            IconButton(
-                onPressed: logout,
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.black,
-                ))
-          ],
         ),
         body: Consumer<QuestionManager>(
           builder: (context, questionManager, child) {

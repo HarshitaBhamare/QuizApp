@@ -32,7 +32,8 @@ class MainAuthPage extends StatelessWidget {
                   TypewriterAnimatedText(
                     'Sign In To Your Account',
                     textStyle: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 34, 5, 84),
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -89,7 +90,7 @@ class MainAuthPage extends StatelessWidget {
                 );
               } catch (e) {
                 print("login email: " + emailController.toString());
-                print("login oassword : " + passwordController.toString());
+                print("login password : " + passwordController.toString());
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -117,6 +118,7 @@ class MainAuthPage extends StatelessWidget {
                   letterSpacing: 1,
                   fontSize: size.height / 30,
                   fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 34, 5, 84),
                 ),
               )),
             ),

@@ -1,15 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_application/AuthPage/auth_gate.dart';
-import 'package:quiz_application/Pages/finalPage.dart';
-import 'package:quiz_application/Pages/quizPage.dart';
 import 'package:quiz_application/Providers/QuestionManagerCount.dart';
 import 'package:quiz_application/Providers/optionsProvider.dart';
 import 'package:quiz_application/Providers/timeManger.dart';
-import 'package:quiz_application/components/incDecBar.dart';
-// import 'package:quiz_application/components/.dart';
-import 'package:quiz_application/components/timerFile.dart';
 import 'firebase_options.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -29,7 +25,7 @@ Future<void> main() async {
         create: (context) => TimeManager(),
       ),
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
@@ -43,22 +39,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        // appBar: AppBar(title: Text(",hehdfbf")),
-        // body: Container(
-        //   width: 100,
-        //   height: 100,
-        //   color: Colors.amber,
-        // ),
-        // body: BarIncDec(),
-        // body: AuthGate(),
-        // body: TimerClock(),
-        // body: MainQuizPage(),
-        body: FinalPage(),
-        // body: BudgetSliderWidget(),
-        // body: MainAuthPage(),
-        // body: RegisterPage(),
+        body: AuthGate(),
       ),
     );
   }

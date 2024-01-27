@@ -34,7 +34,7 @@ class RegisterPage extends StatelessWidget {
                   TypewriterAnimatedText(
                     'Register Yourself',
                     textStyle: TextStyle(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 34, 5, 84),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -123,6 +123,7 @@ class RegisterPage extends StatelessWidget {
                   letterSpacing: 1,
                   fontSize: size.height / 30,
                   fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 34, 5, 84),
                 ),
               )),
             ),
@@ -137,6 +138,7 @@ class RegisterPage extends StatelessWidget {
                 "Do you have account? ",
                 style: TextStyle(
                   fontSize: size.height / 50,
+                  color: Color.fromARGB(255, 34, 5, 84),
                   fontWeight: FontWeight.bold,
                 ),
               ),

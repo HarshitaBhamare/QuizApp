@@ -53,13 +53,15 @@ class _TimerClockState extends State<TimerClock> {
                     "points:",
                     style: TextStyle(
                         color: Color.fromARGB(255, 34, 5, 84),
-                        fontSize: size.height / 40),
+                        fontSize: size.height / 30,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     countPointer.toString(),
                     style: TextStyle(
                         color: Color.fromARGB(255, 34, 5, 84),
-                        fontSize: size.height / 40),
+                        fontSize: size.height / 35,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               )),

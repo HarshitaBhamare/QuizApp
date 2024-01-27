@@ -23,7 +23,7 @@ class MyTextField extends StatelessWidget {
             // disabledBorder: InputBorder.none,
             label: Text(
               hint,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Color.fromARGB(255, 34, 5, 84)),
             ),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
